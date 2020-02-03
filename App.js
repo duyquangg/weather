@@ -6,14 +6,18 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {View, Text} from 'react-native';
-import {Provider} from 'redux';
+import React, { Component } from 'react';
+import { Provider } from 'react-redux';
 import AppRouter from './src/AppRouter';
+import store from './src/redux/store';
 
 class App extends Component {
-  render () {
-    return <AppRouter />;
+  render() {
+    return (
+      <Provider store={store}>
+        <AppRouter />
+      </Provider>
+    );
   }
 }
 export default App;
