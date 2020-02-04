@@ -6,48 +6,66 @@
  * @flow
  */
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
+  StyleSheet, 
   TouchableOpacity,
   TextInput,
 } from 'react-native';
+import { connect } from 'react-redux'
 import getTemp from '../src/api/getTemp';
+
+function mapStateToProps(state) {
+  return {
+    cityName: state.cityName,
+    temp: state.temp,
+    error: state.error,
+    isLoading: state.isLoading
+  }
+}
 class AppRouter extends Component {
-  constructor (props) {
-    super (props);
+  constructor(props) {
+    super(props);
     this.state = {
-      cityName: '',
-      ndo: ''
+      // cityName: '',
+      // ndo: ''
     };
   }
-  render () {
+  render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>Hà Nội hiện tại:</Text>
+        <Text style={styles.message}>{this.getWeatherMessage()}</Text>
         <TextInput
           style={styles.textInput}
           value={this.state.cityName}
-          onChangeText={text => this.setState ({cityName: text})}
+          onChangeText={text => this.setState({ cityName: text })}
         />
         <TouchableOpacity
           style={styles.button}
-          onPress={this.getTempByCityName.bind (this)}
+          onPress={this.getTempByCityName.bind(this)}
         >
           <Text style={styles.buttonText}>Lấy nhiệt độ</Text>
         </TouchableOpacity>
       </View>
     );
   }
-  getTempByCityName () {
+  getWeatherMessage() {
+    const { error, isLoading, cityName, temp } = this.props;
+    if (isLoading) return '...Loading';
+    if (error) return 'Vui lòng thử lại';
+    if (!cityName) return 'Nhập tên thành phố của bạn!';
+    return `${cityName} hiện tại là ${temp}oC`
+
+  }
+  getTempByCityName() {
     getTemp(this.state.cityName)
-    .then(temp => console.log('Hà Nội hiện tại là:',temp + 'oC'))
-    .catch(err => console.log(err))
+      .then(temp => console.log(temp))
+      .catch(err => console.log(err))
   }
 }
-const styles = StyleSheet.create ({
+const styles = StyleSheet.create({
   container: {
     backgroundColor: 'lightblue',
     flex: 1,
@@ -56,7 +74,7 @@ const styles = StyleSheet.create ({
   },
   message: {
     color: '#fff',
-    fontSize: 30,
+    fontSize: 25,
   },
   button: {
     backgroundColor: 'gray',
@@ -75,6 +93,6 @@ const styles = StyleSheet.create ({
     backgroundColor: 'black',
   },
 });
-export default AppRouter;
+export default connect(mapStateToProps)(AppRouter);
 
 //api: http://api.openweathermap.org/data/2.5/find?units=metric&appid=e88e9c6575924c79cc61585a79e039a1&q=
