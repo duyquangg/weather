@@ -15,7 +15,7 @@ import {
   TextInput,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { fetchErorr, fetchSuccess, startFetchData } from '../src/redux/actionCreators';
+import * as actionCreators from '../src/redux/actionCreators';
 import getTemp from '../src/api/getTemp';
 
 function mapStateToProps(state) {
@@ -36,9 +36,7 @@ class AppRouter extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.state.cityName === 'Em' ? <Text >asdasdds</Text> :
-          <Text style={styles.message}>{this.getWeatherMessage()}</Text>
-        }
+        <Text style={styles.message}>{this.getWeatherMessage()}</Text>
         <TextInput
           style={styles.textInput}
           value={this.state.cityName}
@@ -63,10 +61,11 @@ class AppRouter extends Component {
   }
   getTempByCityName() {
     const { cityName } = this.state;
-    this.props.startFetchData()
-    getTemp(cityName)
-      .then(temp => this.props.fetchSuccess(cityName, temp))
-      .catch(() => this.props.fetchErorr())
+    // this.props.startFetchData()
+    // getTemp(cityName)
+    //   .then(temp => this.props.fetchSuccess(cityName, temp))
+    //   .catch(() => this.props.fetchErorr())
+    this.props.fetchDataThunk(cityName)
   }
 }
 const styles = StyleSheet.create({
@@ -97,6 +96,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
 });
-export default connect(mapStateToProps, { startFetchData, fetchErorr, fetchSuccess })(AppRouter);
+export default connect(mapStateToProps, actionCreators)(AppRouter);
 
 //api: http://api.openweathermap.org/data/2.5/find?units=metric&appid=e88e9c6575924c79cc61585a79e039a1&q=

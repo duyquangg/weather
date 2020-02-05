@@ -1,4 +1,5 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
 const defaultState = {
     cityName: null,
@@ -6,7 +7,6 @@ const defaultState = {
     isLoading: false,
     error: false
 };
-
 const reducer = (state = defaultState, action) => {
     switch (action.type) {
         case 'START_FETCH':
@@ -19,5 +19,5 @@ const reducer = (state = defaultState, action) => {
             return state;
     }
 };
-const store = createStore(reducer)
+const store = createStore(reducer, applyMiddleware(thunk))
 export default store;
